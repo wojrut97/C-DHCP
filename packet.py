@@ -1,3 +1,5 @@
+from bitstring import BitArray
+
 
 class packet():
     def __init__(self):
@@ -24,6 +26,16 @@ class packet():
         }
 
 
+    def decode(self, byte_packet):
+        
+
+    def compress(self):
+        packet = bytes()
+        for key in self.content:
+            packet += self.content[key]
+        return packet
+
+
     def DHCP_discover(self):
         self.content["OP"] = bytes([0x01])
         self.content["HTYPE"] = bytes([0x01])
@@ -40,9 +52,9 @@ class packet():
         self.content["CHADDR2"] = bytes([0x8D, 0x59, 0x00, 0x00]) 
         self.content["CHADDR3"] = bytes([0x00, 0x00, 0x00, 0x00]) 
         self.content["CHADDR4"] = bytes([0x00, 0x00, 0x00, 0x00]) 
-        self.content["CHADDR5"] = bytes(0x12)
+        self.content["CHADDR5"] = bytes([0x12])
         self.content["Magiccookie"] = bytes([0x63, 0x82, 0x53, 0x63])
         self.content["DHCPOptions1"] = bytes([0x53 , 0x01 , 0x01])
-        self.content["DHCPOptions2"] = bytes([0x50 , 0x4 , 0xC0, 0xA8, 0x01, 0x64])
+        self.content["DHCPOptions2"] = bytes([0x50 , 0x04 , 0xC0, 0xA8, 0x01, 0x64])
 
-        return sum(self.content.values())
+        return self.compress()
