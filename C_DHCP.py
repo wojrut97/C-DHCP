@@ -10,6 +10,8 @@ def main():
 
     if args.server:
         print("Running in server mode.")
+        CDHCP_server = server.server()
+        CDHCP_server.await_discover()
     elif args.client:
         print("Running in client mode.")
         CDHCP_client = client.client()

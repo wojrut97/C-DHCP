@@ -27,7 +27,7 @@ class packet():
 
 
     def decode(self, byte_packet):
-        
+        pass
 
     def compress(self):
         packet = bytes()
