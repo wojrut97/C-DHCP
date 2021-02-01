@@ -4,30 +4,58 @@ from bitstring import BitArray
 class packet():
     def __init__(self):
         self.content = {
-        "OP": bytes([0x00]),
-        "HTYPE": bytes([0x00]),
-        "HLEN":bytes([0x00]),
-        "HOPS": bytes([0x00]),
-        "XID": bytes([0x00, 0x00, 0x00, 0x00]),
-        "SECS": bytes([0x00, 0x00]),
-        "FLAGS": bytes([0x00, 0x00]),
-        "CIADDR": bytes([0x00, 0x00, 0x00, 0x00]),
-        "YIADDR": bytes([0x00, 0x00, 0x00, 0x00]),
-        "SIADDR": bytes([0x00, 0x00, 0x00, 0x00]),
-        "GIADDR": bytes([0x00, 0x00, 0x00, 0x00]),
-        "CHADDR1": bytes([0x00, 0x00, 0x00, 0x00]),
-        "CHADDR2": bytes([0x00, 0x00, 0x00, 0x00]),
-        "CHADDR3": bytes([0x00, 0x00, 0x00, 0x00]),
-        "CHADDR4": bytes([0x00, 0x00, 0x00, 0x00]),
-        "CHADDR5": bytes(0x00),
-        "Magiccookie": bytes([0x00, 0x00, 0x00, 0x00]),
-        "DHCPOptions1": bytes([0x00, 0x00, 0x00]),
-        "DHCPOptions2": bytes([0x00, 0x00, 0x00, 0x00, 0x00, 0x00])
+        "OP": bytes([0x00]),                                            #1
+        "HTYPE": bytes([0x00]),                                         #1
+        "HLEN":bytes([0x00]),                                           #1
+        "HOPS": bytes([0x00]),                                          #1
+        "XID": bytes([0x00, 0x00, 0x00, 0x00]),                         #4
+        "SECS": bytes([0x00, 0x00]),                                    #2
+        "FLAGS": bytes([0x00, 0x00]),                                   #2
+        "CIADDR": bytes([0x00, 0x00, 0x00, 0x00]),                      #4
+        "YIADDR": bytes([0x00, 0x00, 0x00, 0x00]),                      #4
+        "SIADDR": bytes([0x00, 0x00, 0x00, 0x00]),                      #4
+        "GIADDR": bytes([0x00, 0x00, 0x00, 0x00]),                      #4
+        "CHADDR1": bytes([0x00, 0x00, 0x00, 0x00]),                     #4
+        "CHADDR2": bytes([0x00, 0x00, 0x00, 0x00]),                     #4
+        "CHADDR3": bytes([0x00, 0x00, 0x00, 0x00]),                     #4
+        "CHADDR4": bytes([0x00, 0x00, 0x00, 0x00]),                     #4
+        "CHADDR5": bytes(0x00),                                         #1
+        "Magiccookie": bytes([0x00, 0x00, 0x00, 0x00]),                 #4
+        "DHCPOptions1": bytes([0x00, 0x00, 0x00]),                      #3
+        "DHCPOptions2": bytes([0x00, 0x00, 0x00, 0x00, 0x00, 0x00])     #6      = 58
         }
 
 
     def decode(self, byte_packet):
-        pass
+        byte = 8
+        mask1 = 0xFF
+        mask2 = 0xFFFF
+        mask3 = 0xFFFFFF
+        mask4 = 0xFFFFFFFF
+        mask6 = 0xFFFFFFFFFFFF
+        int_packet = int.from_bytes(byte_packet, "big")
+
+        self.content["OP"] = int_packet & (mask1 << (57 * byte))
+        self.content["HTYPE"] = int_packet & (mask1 << (56 * byte))
+        self.content["HLEN"] = int_packet & (mask1 << (55 * byte))
+        self.content["HOPS"] = int_packet & (mask1 << (54 * byte))
+        self.content["XID"] = int_packet & (mask4 << (50 * byte))
+        self.content["SECS"] = int_packet & (mask2 << (48 * byte))
+        self.content["FLAGS"] = int_packet & (mask2 << (46 * byte))
+        self.content["CIADDR"] = int_packet & (mask4 << (42 * byte))
+        self.content["YIADDR"] = int_packet & (mask4 << (38 * byte))
+        self.content["SIADDR"] = int_packet & (mask4 << (34 * byte))
+        self.content["GIADDR"] = int_packet & (mask4 << (30 * byte))
+        self.content["CHADDR1"] = int_packet & (mask4 << (26 * byte))
+        self.content["CHADDR2"] = int_packet & (mask4 << (22 * byte))
+        self.content["CHADDR3"] = int_packet & (mask4 << (18 * byte))
+        self.content["CHADDR4"] = int_packet & (mask4 << (14 * byte)) 
+        self.content["CHADDR5"] = int_packet & (mask1 << (13 * byte))
+        self.content["Magiccookie"] = int_packet & (mask4 << (9 * byte))
+        self.content["DHCPOptions1"] = int_packet & (mask3 << (6 * byte))
+        self.content["DHCPOptions2"] = int_packet & (mask6)
+        
+        return self.content
 
     def compress(self):
         packet = bytes()

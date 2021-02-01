@@ -15,7 +15,7 @@ def main():
     elif args.client:
         print("Running in client mode.")
         CDHCP_client = client.client()
-        CDHCP_client.DHCP_discover()
+        CDHCP_client.send_DHCP_discover()
 
 if __name__ == "__main__":
     main()
