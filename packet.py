@@ -1,4 +1,5 @@
-
+import random
+import uuid
 
 class packet():
     def __init__(self):
@@ -14,14 +15,12 @@ class packet():
         "YIADDR": bytes([0x00, 0x00, 0x00, 0x00]),                      #4
         "SIADDR": bytes([0x00, 0x00, 0x00, 0x00]),                      #4
         "GIADDR": bytes([0x00, 0x00, 0x00, 0x00]),                      #4
-        "CHADDR1": bytes([0x00, 0x00, 0x00, 0x00]),                     #4
-        "CHADDR2": bytes([0x00, 0x00, 0x00, 0x00]),                     #4
+        "CHADDR1": bytes([0x00, 0x00, 0x00, 0x00, 0x00, 0x00]),         #6
+        "CHADDR2": bytes([0x00, 0x00, 0x00, 0x00, 0x00, 0x00]),         #6
         "CHADDR3": bytes([0x00, 0x00, 0x00, 0x00]),                     #4
-        "CHADDR4": bytes([0x00, 0x00, 0x00, 0x00]),                     #4
-        "CHADDR5": bytes(0x00),                                         #1
         "Magiccookie": bytes([0x00, 0x00, 0x00, 0x00]),                 #4
         "DHCPOptions1": bytes([0x00, 0x00, 0x00]),                      #3
-        "DHCPOptions2": bytes([0x00, 0x00, 0x00, 0x00, 0x00, 0x00])     #6      = 58
+        "DHCPOptions2": bytes([0x00, 0x00, 0x00, 0x00, 0x00, 0x00])     #6      = 57
         }
 
 
@@ -37,14 +36,12 @@ class packet():
         self.content["YIADDR"] = int.from_bytes(byte_packet[16:19], "big")
         self.content["SIADDR"] = int.from_bytes(byte_packet[20:23], "big")
         self.content["GIADDR"] = int.from_bytes(byte_packet[24:27], "big")
-        self.content["CHADDR1"] = int.from_bytes(byte_packet[28:31], "big")
-        self.content["CHADDR2"] = int.from_bytes(byte_packet[32:35], "big")
-        self.content["CHADDR3"] = int.from_bytes(byte_packet[36:39], "big")
-        self.content["CHADDR4"] = int.from_bytes(byte_packet[40:43], "big")
-        self.content["CHADDR5"] = byte_packet[44]
-        self.content["Magiccookie"] = int.from_bytes(byte_packet[45:48], "big")
-        self.content["DHCPOptions1"] = int.from_bytes(byte_packet[49:51], "big")
-        self.content["DHCPOptions2"] = int.from_bytes(byte_packet[52:57], "big")
+        self.content["CHADDR1"] = int.from_bytes(byte_packet[28:33], "big")
+        self.content["CHADDR2"] = int.from_bytes(byte_packet[34:39], "big")
+        self.content["CHADDR3"] = int.from_bytes(byte_packet[40:43], "big")
+        self.content["Magiccookie"] = int.from_bytes(byte_packet[44:47], "big")
+        self.content["DHCPOptions1"] = int.from_bytes(byte_packet[48:50], "big")
+        self.content["DHCPOptions2"] = int.from_bytes(byte_packet[51:56], "big")
         
         return self.content
 
@@ -54,24 +51,27 @@ class packet():
             packet += self.content[key]
         return packet
 
+    def generateXID(self):
+        return random.randint(0x00, 0xFFFFFFFF).to_bytes(4, "big")
+
+    def getMAC(self):
+        return uuid.getnode().to_bytes(6, "big")
 
     def DHCP_discover(self):
         self.content["OP"] = bytes([0x01])
         self.content["HTYPE"] = bytes([0x01])
         self.content["HLEN"] = bytes([0x06])
         self.content["HOPS"] = bytes([0x00])
-        self.content["XID"] = bytes([0x39, 0x03, 0xF3, 0x26])
+        self.content["XID"] = self.generateXID()
         self.content["SECS"] = bytes([0x00, 0x00])
         self.content["FLAGS"] = bytes([0x00, 0x00])
         self.content["CIADDR"] = bytes([0x00, 0x00, 0x00, 0x00])
         self.content["YIADDR"] = bytes([0x00, 0x00, 0x00, 0x00])
         self.content["SIADDR"] = bytes([0x00, 0x00, 0x00, 0x00])
         self.content["GIADDR"] = bytes([0x00, 0x00, 0x00, 0x00])
-        self.content["CHADDR1"] = bytes([0x00, 0x05, 0x3C, 0x04]) 
-        self.content["CHADDR2"] = bytes([0x8D, 0x59, 0x00, 0x00]) 
+        self.content["CHADDR1"] = self.getMAC()
+        self.content["CHADDR2"] = bytes([0x00, 0x00, 0x00, 0x00, 0x00, 0x00]) 
         self.content["CHADDR3"] = bytes([0x00, 0x00, 0x00, 0x00]) 
-        self.content["CHADDR4"] = bytes([0x00, 0x00, 0x00, 0x00]) 
-        self.content["CHADDR5"] = bytes([0x12])
         self.content["Magiccookie"] = bytes([0x63, 0x82, 0x53, 0x63])
         self.content["DHCPOptions1"] = bytes([0x53 , 0x01 , 0x01])
         self.content["DHCPOptions2"] = bytes([0x50 , 0x04 , 0xC0, 0xA8, 0x01, 0x64])
