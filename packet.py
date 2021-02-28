@@ -1,4 +1,3 @@
-from bitstring import BitArray
 
 
 class packet():
@@ -27,33 +26,25 @@ class packet():
 
 
     def decode(self, byte_packet):
-        byte = 8
-        mask1 = 0xFF
-        mask2 = 0xFFFF
-        mask3 = 0xFFFFFF
-        mask4 = 0xFFFFFFFF
-        mask6 = 0xFFFFFFFFFFFF
-        int_packet = int.from_bytes(byte_packet, "big")
-
-        self.content["OP"] = int_packet & (mask1 << (57 * byte))
-        self.content["HTYPE"] = int_packet & (mask1 << (56 * byte))
-        self.content["HLEN"] = int_packet & (mask1 << (55 * byte))
-        self.content["HOPS"] = int_packet & (mask1 << (54 * byte))
-        self.content["XID"] = int_packet & (mask4 << (50 * byte))
-        self.content["SECS"] = int_packet & (mask2 << (48 * byte))
-        self.content["FLAGS"] = int_packet & (mask2 << (46 * byte))
-        self.content["CIADDR"] = int_packet & (mask4 << (42 * byte))
-        self.content["YIADDR"] = int_packet & (mask4 << (38 * byte))
-        self.content["SIADDR"] = int_packet & (mask4 << (34 * byte))
-        self.content["GIADDR"] = int_packet & (mask4 << (30 * byte))
-        self.content["CHADDR1"] = int_packet & (mask4 << (26 * byte))
-        self.content["CHADDR2"] = int_packet & (mask4 << (22 * byte))
-        self.content["CHADDR3"] = int_packet & (mask4 << (18 * byte))
-        self.content["CHADDR4"] = int_packet & (mask4 << (14 * byte)) 
-        self.content["CHADDR5"] = int_packet & (mask1 << (13 * byte))
-        self.content["Magiccookie"] = int_packet & (mask4 << (9 * byte))
-        self.content["DHCPOptions1"] = int_packet & (mask3 << (6 * byte))
-        self.content["DHCPOptions2"] = int_packet & (mask6)
+        self.content["OP"] = byte_packet[0]
+        self.content["HTYPE"] = byte_packet[1]
+        self.content["HLEN"] = byte_packet[2]
+        self.content["HOPS"] = byte_packet[3]
+        self.content["XID"] = int.from_bytes(byte_packet[4:7], "big")
+        self.content["SECS"] = int.from_bytes(byte_packet[8:9], "big")
+        self.content["FLAGS"] = int.from_bytes(byte_packet[10:11], "big")
+        self.content["CIADDR"] = int.from_bytes(byte_packet[12:15], "big")
+        self.content["YIADDR"] = int.from_bytes(byte_packet[16:19], "big")
+        self.content["SIADDR"] = int.from_bytes(byte_packet[20:23], "big")
+        self.content["GIADDR"] = int.from_bytes(byte_packet[24:27], "big")
+        self.content["CHADDR1"] = int.from_bytes(byte_packet[28:31], "big")
+        self.content["CHADDR2"] = int.from_bytes(byte_packet[32:35], "big")
+        self.content["CHADDR3"] = int.from_bytes(byte_packet[36:39], "big")
+        self.content["CHADDR4"] = int.from_bytes(byte_packet[40:43], "big")
+        self.content["CHADDR5"] = byte_packet[44]
+        self.content["Magiccookie"] = int.from_bytes(byte_packet[45:48], "big")
+        self.content["DHCPOptions1"] = int.from_bytes(byte_packet[49:51], "big")
+        self.content["DHCPOptions2"] = int.from_bytes(byte_packet[52:57], "big")
         
         return self.content
 

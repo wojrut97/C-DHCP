@@ -17,7 +17,9 @@ class client:
         return sock
         
     def send_DHCP_discover(self):
-        message = packet.packet().DHCP_discover()
+        message = packet.packet()
+        message = message.DHCP_discover()
+        print("message: ", message)
         self.sock.sendto(message, self.broadcast)
 
     def await_offer(self):
