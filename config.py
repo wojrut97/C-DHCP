@@ -16,6 +16,7 @@ class config:
                 config.read(config_file)
                 self.lease_time = config["SERVER"]["lease_time"]
                 self.interface = config["SERVER"]["interface"]
+                self.network_ip = config["SERVER"]["network_ip"]
             except:
                 print("Error reading server config file")
         else:

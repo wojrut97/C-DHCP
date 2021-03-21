@@ -1,6 +1,6 @@
 import argparse
-import server
-import client
+from server import Server
+from client import Client
 
 def main():
     parser = argparse.ArgumentParser(description="Choose C-DHCP mode.")
@@ -10,12 +10,14 @@ def main():
 
     if args.server:
         print("Running in server mode.")
-        CDHCP_server = server.server()
-        CDHCP_server.await_discover()
+        CDHCP_server = Server()
+        CDHCP_server.awaitMessage()
+        CDHCP_server.sendOffer()
     elif args.client:
         print("Running in client mode.")
-        CDHCP_client = client.client()
-        CDHCP_client.send_DHCP_discover()
+        CDHCP_client = Client()
+        CDHCP_client.sendDiscover()
+        CDHCP_client.awaitMessage()
 
 if __name__ == "__main__":
     main()
