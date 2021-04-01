@@ -1,6 +1,7 @@
 import socket
 import config
 import random
+import time
 from host import Host
 from packet import packet
 from interface import interface
@@ -10,8 +11,8 @@ class Client(Host):
     def __init__(self):
         super(Client, self).__init__()
         self.config_params = config.config("client_dhcp.conf")
-        self.client_port = 10068
-        self.server_port = 10067
+        self.client_port = 68
+        self.server_port = 67
         self.sock = self.setupSocket()
         self.broadcast = ('<broadcast>', self.server_port)
         self.interface = interface()
@@ -27,6 +28,7 @@ class Client(Host):
         discover = self.createDiscover()
         print("message: ", discover.print())
         self.sock.sendto(discover.compress(), self.broadcast)
+        self.updateTransactions(discover.XID)
 
     def createDiscover(self):
         discover = packet()
@@ -49,6 +51,25 @@ class Client(Host):
         discover.DHCPOptions2 = bytes([0x50 , 0x04 , 0xC0, 0xA8, 0x01, 0x64])
         return discover
         
+    def sendRequest(self):
+        request = self.createRequest()
+        print("message: ", request.print())
+        self.sock.sendto(request.compress(), self.broadcast)
+        self.updateTransactions(request.XID)
+
+    def createRequest(self):
+        request = self.response
+        request.OP = bytes([0x01])
+        request.SIADDR = bytes([0x00, 0x00, 0x00, 0x00])
+        request.GIADDR = bytes([0x00, 0x00, 0x00, 0x00])
+        request.CHADDR1 = self.interface.getMAC()
+        request.CHADDR2 = bytes([0x00, 0x00, 0x00, 0x00, 0x00, 0x00]) 
+        request.CHADDR3 = bytes([0x00, 0x00, 0x00, 0x00]) 
+        request.Magiccookie = bytes([0x63, 0x82, 0x53, 0x63])
+        request.DHCPOptions1 = bytes([0x53 , 0x01 , 0x01])
+        request.DHCPOptions2 = bytes([0x50 , 0x04 , 0xC0, 0xA8, 0x01, 0x64])
+        return request
+
     def generateXID(self):
         return random.randint(0x00, 0xFFFFFFFF).to_bytes(4, "big")
 

@@ -11,8 +11,8 @@ class Server(Host):
     def __init__(self):
         super(Server, self).__init__()
         self.config_params = config.config("server_dhcp.conf")
-        self.client_port = 10068
-        self.server_port = 10067
+        self.client_port = 68
+        self.server_port = 67
         self.broadcast = ('<broadcast>', self.client_port)
         self.sock = self.setupSocket()
         self.ongoing_transactions = {}
@@ -28,7 +28,8 @@ class Server(Host):
 
     def sendOffer(self):
         offer = self.createOffer()
-        print("message: ", offer.print())
+        print("Send message: ")
+        offer.print()
         self.sock.sendto(offer.compress(), self.broadcast)
 
     def createOffer(self):
@@ -36,6 +37,17 @@ class Server(Host):
         offer.OP = bytes([0x02])
         offer.YIADDR = self.chooseIP(self.response.CHADDR1)
         return offer
+
+    def sendAck(self):
+        ack = self.createOffer()
+        print("Send message: ")
+        ack.print()
+        self.sock.sendto(ack.compress(), self.broadcast)
+
+    def createAck(self):
+        ack = self.response
+        ack.OP = bytes([0x02])
+        return ack    
 
     def chooseIP(self, mac):
         ip = self.unused_addresses[-1]
@@ -60,12 +72,9 @@ class Server(Host):
                     continue
                 elif mac is None:
                     unused_addresses.append(host)
-                    # print("Unused: ", host)
                 else:
                     busy_addresses.append(host)
-                    # print("Used: ", host, "MAC: ", mac)
                 time.sleep(0.005)
             time.sleep(0.05)
-        # print("busy_addresses: ", busy_addresses)
         return unused_addresses
 

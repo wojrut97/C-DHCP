@@ -1,5 +1,5 @@
 import random
-
+import struct
 
 class packet():
     def __init__(self):
@@ -23,23 +23,23 @@ class packet():
 
 
     def decode(self, byte_packet):
-        self.OP = byte_packet[0]
-        self.HTYPE = byte_packet[1]
-        self.HLEN = byte_packet[2]
-        self.HOPS = byte_packet[3]
-        self.XID = int.from_bytes(byte_packet[4:7], "big")
-        self.SECS = int.from_bytes(byte_packet[8:9], "big")
-        self.FLAGS = int.from_bytes(byte_packet[10:11], "big")
-        self.CIADDR = int.from_bytes(byte_packet[12:15], "big")
-        self.YIADDR = int.from_bytes(byte_packet[16:19], "big")
-        self.SIADDR = int.from_bytes(byte_packet[20:23], "big")
-        self.GIADDR = int.from_bytes(byte_packet[24:27], "big")
-        self.CHADDR1 = int.from_bytes(byte_packet[28:33], "big")
-        self.CHADDR2 = int.from_bytes(byte_packet[34:39], "big")
-        self.CHADDR3 = int.from_bytes(byte_packet[40:43], "big")
-        self.Magiccookie = int.from_bytes(byte_packet[44:47], "big")
-        self.DHCPOptions1 = int.from_bytes(byte_packet[48:50], "big")
-        self.DHCPOptions2 = int.from_bytes(byte_packet[51:56], "big")
+        self.OP = byte_packet[0].to_bytes(1, "big")
+        self.HTYPE = byte_packet[1].to_bytes(1, "big")
+        self.HLEN = byte_packet[2].to_bytes(1, "big")
+        self.HOPS = byte_packet[3].to_bytes(1, "big")
+        self.XID = byte_packet[4:8]
+        self.SECS = byte_packet[8:10]
+        self.FLAGS = byte_packet[10:12]
+        self.CIADDR = byte_packet[12:16]
+        self.YIADDR = byte_packet[16:20]
+        self.SIADDR = byte_packet[20:24]
+        self.GIADDR = byte_packet[24:28]
+        self.CHADDR1 = byte_packet[28:34]
+        self.CHADDR2 = byte_packet[34:40]
+        self.CHADDR3 = byte_packet[40:44]
+        self.Magiccookie = byte_packet[44:48]
+        self.DHCPOptions1 = byte_packet[48:51]
+        self.DHCPOptions2 = byte_packet[51:57]
         
         return self
 

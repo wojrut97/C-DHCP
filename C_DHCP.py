@@ -13,10 +13,14 @@ def main():
         CDHCP_server = Server()
         CDHCP_server.awaitMessage()
         CDHCP_server.sendOffer()
+        CDHCP_server.awaitMessage()
+        CDHCP_server.sendAck()
     elif args.client:
         print("Running in client mode.")
         CDHCP_client = Client()
         CDHCP_client.sendDiscover()
+        CDHCP_client.awaitMessage()
+        CDHCP_client.sendRequest()
         CDHCP_client.awaitMessage()
 
 if __name__ == "__main__":
