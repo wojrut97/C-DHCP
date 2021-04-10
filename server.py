@@ -5,7 +5,7 @@ import ipaddress
 import arpreq
 import time
 from host import Host
-from packet import packet
+from packet import Packet
 
 class Server(Host):
     def __init__(self):

@@ -3,35 +3,31 @@ import config
 import random
 import time
 from host import Host
-from packet import packet
-from interface import interface
+from packet import Packet
+from interface import Interface
 
 
 class Client(Host):
     def __init__(self):
         super(Client, self).__init__()
         self.config_params = config.config("client_dhcp.conf")
-        self.client_port = 68
-        self.server_port = 67
-        self.sock = self.setupSocket()
+        self.interface = Interface(self.config_params.interface)
+        self.client_port = 67
+        self.server_port = 68
+        self.listening_sock = self.setupSocket("", self.client_port)
+        self.writing_sock = self.setupSocket("", self.server_port)
         self.broadcast = ('<broadcast>', self.server_port)
-        self.interface = interface()
         self.ongoing_transactions = {}
 
-    def setupSocket(self):
-        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-        sock.bind(("", self.client_port))
-        return sock
         
     def sendDiscover(self):
         discover = self.createDiscover()
         print("message: ", discover.print())
-        self.sock.sendto(discover.compress(), self.broadcast)
-        self.updateTransactions(discover.XID)
+        self.sendMessage(discover)
+
 
     def createDiscover(self):
-        discover = packet()
+        discover = Packet()
         discover.OP = bytes([0x01])
         discover.HTYPE = bytes([0x01])
         discover.HLEN = bytes([0x06])
@@ -54,8 +50,7 @@ class Client(Host):
     def sendRequest(self):
         request = self.createRequest()
         print("message: ", request.print())
-        self.sock.sendto(request.compress(), self.broadcast)
-        self.updateTransactions(request.XID)
+        self.sendMessage(request)
 
     def createRequest(self):
         request = self.response

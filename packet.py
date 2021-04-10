@@ -1,7 +1,8 @@
 import random
 import struct
+import dhcppython
 
-class packet():
+class Packet():
     def __init__(self):
         self.OP = bytes([0x00]),                                            #1
         self.HTYPE = bytes([0x00]),                                         #1
