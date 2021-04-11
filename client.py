@@ -3,8 +3,8 @@ import config
 import random
 import time
 from host import Host
-from packet import Packet
 from interface import Interface
+from packet import Packet
 
 
 class Client(Host):
@@ -22,7 +22,8 @@ class Client(Host):
         
     def sendDiscover(self):
         discover = self.createDiscover()
-        print("message: ", discover.print())
+        print("Sending discover...")
+        discover.print()
         self.sendMessage(discover)
 
 
@@ -39,17 +40,16 @@ class Client(Host):
         discover.YIADDR = bytes([0x00, 0x00, 0x00, 0x00])
         discover.SIADDR = bytes([0x00, 0x00, 0x00, 0x00])
         discover.GIADDR = bytes([0x00, 0x00, 0x00, 0x00])
-        discover.CHADDR1 = self.interface.getMAC()
-        discover.CHADDR2 = bytes([0x00, 0x00, 0x00, 0x00, 0x00, 0x00]) 
-        discover.CHADDR3 = bytes([0x00, 0x00, 0x00, 0x00]) 
-        discover.Magiccookie = bytes([0x63, 0x82, 0x53, 0x63])
-        discover.DHCPOptions1 = bytes([0x53 , 0x01 , 0x01])
-        discover.DHCPOptions2 = bytes([0x50 , 0x04 , 0xC0, 0xA8, 0x01, 0x64])
+        discover.CHADDR = self.interface.getMAC()
+        discover.Magiccookie = bytes([0x00, 0x00, 0x00, 0x00])
+        discover.addOption(53, 1)
+        discover.addOption(255, 1)
         return discover
         
     def sendRequest(self):
         request = self.createRequest()
-        print("message: ", request.print())
+        print("Sending Request...")
+        # request.print()
         self.sendMessage(request)
 
     def createRequest(self):
@@ -57,12 +57,11 @@ class Client(Host):
         request.OP = bytes([0x01])
         request.SIADDR = bytes([0x00, 0x00, 0x00, 0x00])
         request.GIADDR = bytes([0x00, 0x00, 0x00, 0x00])
-        request.CHADDR1 = self.interface.getMAC()
-        request.CHADDR2 = bytes([0x00, 0x00, 0x00, 0x00, 0x00, 0x00]) 
-        request.CHADDR3 = bytes([0x00, 0x00, 0x00, 0x00]) 
-        request.Magiccookie = bytes([0x63, 0x82, 0x53, 0x63])
-        request.DHCPOptions1 = bytes([0x53 , 0x01 , 0x01])
-        request.DHCPOptions2 = bytes([0x50 , 0x04 , 0xC0, 0xA8, 0x01, 0x64])
+        request.CHADDR = self.interface.getMAC()
+        request.DHCPOptions = bytes([0x00])
+        request.clearOptions()
+        request.addOption(53, 3)
+        request.addOption(255, 1)
         return request
 
     def generateXID(self):

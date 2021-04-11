@@ -22,11 +22,9 @@ class Host:
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         sock.setblocking(False)
-        print("TUTAJ interface: ", self.interface)
-        print("TUTAJ: ", self.interface.name)
-        print("TUTAJ encoded: ", self.interface.name.encode())
         if self.interface is not None:
             sock.setsockopt(socket.SOL_SOCKET, socket.SO_BINDTODEVICE, self.interface.name.encode())
+        print("Binding socket, host: ", host, ", port: ", port)
         sock.bind((host, port))
         return sock
 
@@ -59,18 +57,18 @@ class Host:
                 time.sleep(0.01)
 
     def awaitMessage(self):
-        for attempt in range(10):
+        while True:
             if self.isReadyForRead(self.listening_sock):
                 print("listening_sock: ", self.listening_sock)
                 data, addr = self.listening_sock.recvfrom(1024)
-                self.response = packet().decode(data)
+                self.response = Packet().decode(data)
                 print("Received message from: ", addr, " containig:")
                 self.response.print()
                 self.updateTransactions(self.response.XID)
                 print("Transaction table: ", self.ongoing_transactions)
                 break
             else:
-                print("No data in listening socket, attept: ", attempt)
-                time.sleep(0.01)
+                # print("No data in listening socket, attept: ", attempt)
+                time.sleep(0.1)
             
 

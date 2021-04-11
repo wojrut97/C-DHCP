@@ -4,6 +4,7 @@ import threading
 import ipaddress
 import arpreq
 import time
+from interface import Interface
 from host import Host
 from packet import Packet
 
@@ -11,42 +12,44 @@ class Server(Host):
     def __init__(self):
         super(Server, self).__init__()
         self.config_params = config.config("server_dhcp.conf")
-        self.client_port = 68
-        self.server_port = 67
+        self.interface = Interface(self.config_params.interface)
+        self.client_port = 67
+        self.server_port = 68
+        self.listening_sock = self.setupSocket("", self.server_port)
+        self.writing_sock = self.setupSocket("", self.client_port)
         self.broadcast = ('<broadcast>', self.client_port)
-        self.sock = self.setupSocket()
         self.ongoing_transactions = {}
         self.known_hosts = {}
         self.unused_addresses = self.scanFreeAddresses()
 
 
-    def setupSocket(self):
-        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-        sock.bind((self.getIP(), self.server_port))
-        return sock
-
     def sendOffer(self):
         offer = self.createOffer()
-        print("Send message: ")
+        print("Sending offer...")
         offer.print()
-        self.sock.sendto(offer.compress(), self.broadcast)
+        self.sendMessage(offer)
 
     def createOffer(self):
         offer = self.response
         offer.OP = bytes([0x02])
-        offer.YIADDR = self.chooseIP(self.response.CHADDR1)
+        offer.YIADDR = self.chooseIP(self.response.CHADDR)
+        offer.clearOptions()
+        offer.addOption(53, 2)
+        offer.addOption(255, 1)
         return offer
 
     def sendAck(self):
         ack = self.createOffer()
-        print("Send message: ")
+        print("Sending ack...")
         ack.print()
-        self.sock.sendto(ack.compress(), self.broadcast)
+        self.sendMessage(ack)
 
     def createAck(self):
         ack = self.response
         ack.OP = bytes([0x02])
+        ack.clearOptions()
+        ack.addOption(53, 4)
+        ack.addOption(255, 1)
         return ack    
 
     def chooseIP(self, mac):
@@ -75,6 +78,6 @@ class Server(Host):
                 else:
                     busy_addresses.append(host)
                 time.sleep(0.005)
-            time.sleep(0.05)
+        # print("free addresses: ", unused_addresses)
         return unused_addresses
 
