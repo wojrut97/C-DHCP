@@ -68,7 +68,7 @@ class Host:
                 print("Transaction table: ", self.ongoing_transactions)
                 break
             else:
-                # print("No data in listening socket, attept: ", attempt)
+                print("No data in listening socket...")
                 time.sleep(0.1)
             
 

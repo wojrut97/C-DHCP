@@ -5,5 +5,8 @@ class Interface:
         self.name = name
     
     def getMAC(self):
-        return uuid.getnode().to_bytes(16, "big")
+        mac = uuid.getnode()
+        print("Interface's MAC: ", hex(mac))
+        return mac.to_bytes(6, "little")
+
         

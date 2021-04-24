@@ -12,8 +12,8 @@ class Client(Host):
         super(Client, self).__init__()
         self.config_params = config.config("client_dhcp.conf")
         self.interface = Interface(self.config_params.interface)
-        self.client_port = 67
-        self.server_port = 68
+        self.client_port = 68
+        self.server_port = 67
         self.listening_sock = self.setupSocket("", self.client_port)
         self.writing_sock = self.setupSocket("", self.server_port)
         self.broadcast = ('<broadcast>', self.server_port)
@@ -40,10 +40,10 @@ class Client(Host):
         discover.YIADDR = bytes([0x00, 0x00, 0x00, 0x00])
         discover.SIADDR = bytes([0x00, 0x00, 0x00, 0x00])
         discover.GIADDR = bytes([0x00, 0x00, 0x00, 0x00])
-        discover.CHADDR = self.interface.getMAC()
-        discover.Magiccookie = bytes([0x00, 0x00, 0x00, 0x00])
+        discover.CHADDR = discover.macAlign(self.interface.getMAC())
+        discover.Magiccookie = bytes([0x63, 0x82, 0x53, 0x63])
         discover.addOption(53, 1)
-        discover.addOption(255, 1)
+        discover.addOption(255, 255)
         return discover
         
     def sendRequest(self):

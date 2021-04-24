@@ -3,6 +3,11 @@ import struct
 
 class Packet():
     def __init__(self):
+        self._supported_options = {
+            53: 1,
+            255: 1
+        }
+
         self._OP_size = 1
         self._HTYPE_size = 1
         self._HLEN_size = 1
@@ -19,10 +24,6 @@ class Packet():
         self._FILE_size = 128
         self._Magiccookie_size = 4
         self._DHCPOptions_size = 0
-        self._supported_options = {
-            53: 1,
-            255: 1
-        }
 
         self.OP = self.fillWithZeros(self._OP_size)
         self.HTYPE = self.fillWithZeros(self._HTYPE_size)
@@ -65,7 +66,6 @@ class Packet():
         self.DHCPOptions = byte_packet[140:-1]
         return self
 
-
     def isPacketData(self, key):
         return key[0] != "_"
 
@@ -84,9 +84,13 @@ class Packet():
     def isOptionSupported(self, tag):
         return tag in self._supported_options.keys()
 
+    def macAlign(self, mac):
+        zeros = self.fillWithZeros(10)
+        return mac + zeros
+
+
     def addOption(self, tag, value):
         if self.isOptionSupported(tag):
-            print("typ opcji: ", type(self.DHCPOptions))
             length = self._supported_options[tag]
             option = bytearray([tag, length, value])
             self.DHCPOptions += option
