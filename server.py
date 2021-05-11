@@ -13,11 +13,7 @@ class Server(Host):
         super(Server, self).__init__()
         self.config_params = config.config("server_dhcp.conf")
         self.interface = Interface(self.config_params.interface)
-        self.client_port = 67
-        self.server_port = 68
-        self.listening_sock = self.setupSocket("", self.server_port)
-        self.writing_sock = self.setupSocket("", self.client_port)
-        self.broadcast = ('<broadcast>', self.client_port)
+        self.sock = self.setupSocket("", self.server_port)
         self.ongoing_transactions = {}
         self.known_hosts = {}
         self.unused_addresses = self.scanFreeAddresses()
@@ -27,29 +23,35 @@ class Server(Host):
         offer = self.createOffer()
         print("Sending offer...")
         offer.print()
-        self.sendMessage(offer)
+        self.sendMessage(offer, self.client_broadcast)
 
     def createOffer(self):
         offer = self.response
         offer.OP = bytes([0x02])
         offer.YIADDR = self.chooseIP(self.response.CHADDR)
+        offer.Magiccookie = bytes([0x63, 0x82, 0x53, 0x63])
         offer.clearOptions()
         offer.addOption(53, 2)
-        offer.addOption(255, 1)
+        print("offer przed: ", offer.DHCPOptions)
+        offer.addOption(255, 255)
+        print("offer po: ", offer.DHCPOptions)
         return offer
 
     def sendAck(self):
-        ack = self.createOffer()
+        ack = self.createAck()
         print("Sending ack...")
         ack.print()
-        self.sendMessage(ack)
+        self.sendMessage(ack, self.client_broadcast)
 
     def createAck(self):
         ack = self.response
         ack.OP = bytes([0x02])
+        ack.Magiccookie = bytes([0x63, 0x82, 0x53, 0x63])
         ack.clearOptions()
         ack.addOption(53, 4)
-        ack.addOption(255, 1)
+        print("ACK przed: ", ack.DHCPOptions)
+        ack.addOption(255, 255)
+        print("ACK po: ", ack.DHCPOptions)
         return ack    
 
     def chooseIP(self, mac):

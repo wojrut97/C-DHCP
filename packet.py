@@ -61,9 +61,9 @@ class Packet():
         self.GIADDR = byte_packet[24:28]
         self.CHADDR = byte_packet[28:44]
         self.SNAME = byte_packet[44:108]
-        self.FILE = byte_packet[108:136]
-        self.Magiccookie = byte_packet[136:140]
-        self.DHCPOptions = byte_packet[140:-1]
+        self.FILE = byte_packet[108:236]
+        self.Magiccookie = byte_packet[236:240]
+        self.DHCPOptions = byte_packet[240:-1]
         return self
 
     def isPacketData(self, key):

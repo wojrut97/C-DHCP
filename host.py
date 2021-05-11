@@ -8,8 +8,12 @@ class Host:
     def __init__(self):
         self.response = Packet()
         self.ongoing_transactions = {}
-        self.listening_sock = None
-        self.writing_sock = None
+        self.client_port = 68
+        self.server_port = 67
+        self.server_broadcast = ('<broadcast>', self.server_port)
+        self.client_broadcast = ('<broadcast>', self.client_port)
+        self.sock = None
+        # self.writing_sock = None
         self.broadcast = None
         self.interface = None
 
@@ -21,7 +25,7 @@ class Host:
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-        sock.setblocking(False)
+        # sock.setblocking(False)
         if self.interface is not None:
             sock.setsockopt(socket.SOL_SOCKET, socket.SO_BINDTODEVICE, self.interface.name.encode())
         print("Binding socket, host: ", host, ", port: ", port)
@@ -45,11 +49,10 @@ class Host:
         sock = select.select([socket], [], [], 0)
         return bool(len(sock[0]))
 
-    def sendMessage(self, packet):
+    def sendMessage(self, packet, destination):
         for attempt in range(10):
-            if self.isReadyForSend(self.writing_sock):
-                print("sock: ", self.writing_sock)
-                self.writing_sock.sendto(packet.compress(), self.broadcast)
+            if self.isReadyForSend(self.sock):
+                self.sock.sendto(packet.compress(), destination)
                 self.updateTransactions(packet.XID)
                 break
             else:
@@ -57,18 +60,11 @@ class Host:
                 time.sleep(0.01)
 
     def awaitMessage(self):
-        while True:
-            if self.isReadyForRead(self.listening_sock):
-                print("listening_sock: ", self.listening_sock)
-                data, addr = self.listening_sock.recvfrom(1024)
-                self.response = Packet().decode(data)
-                print("Received message from: ", addr, " containig:")
-                self.response.print()
-                self.updateTransactions(self.response.XID)
-                print("Transaction table: ", self.ongoing_transactions)
-                break
-            else:
-                print("No data in listening socket...")
-                time.sleep(0.1)
+        data, addr = self.sock.recvfrom(1024)
+        self.response = Packet().decode(data)
+        # print("Received message from: ", addr, " containig:")
+        # self.response.print()
+        self.updateTransactions(self.response.XID)
+        print("Transaction table: ", self.ongoing_transactions)
             
 
