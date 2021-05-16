@@ -62,9 +62,6 @@ class Host:
     def awaitMessage(self):
         data, addr = self.sock.recvfrom(1024)
         self.response = Packet().decode(data)
-        # print("Received message from: ", addr, " containig:")
-        # self.response.print()
         self.updateTransactions(self.response.XID)
-        print("Transaction table: ", self.ongoing_transactions)
             
 

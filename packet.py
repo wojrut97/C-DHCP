@@ -1,13 +1,9 @@
 import random
 import struct
+import time 
 
 class Packet():
     def __init__(self):
-        self._supported_options = {
-            53: 1,
-            255: 1
-        }
-
         self._OP_size = 1
         self._HTYPE_size = 1
         self._HLEN_size = 1
@@ -24,6 +20,8 @@ class Packet():
         self._FILE_size = 128
         self._Magiccookie_size = 4
         self._DHCPOptions_size = 0
+
+        self._DHCPOptions_dict = {}
 
         self.OP = self.fillWithZeros(self._OP_size)
         self.HTYPE = self.fillWithZeros(self._HTYPE_size)
@@ -64,6 +62,8 @@ class Packet():
         self.FILE = byte_packet[108:236]
         self.Magiccookie = byte_packet[236:240]
         self.DHCPOptions = byte_packet[240:-1]
+
+        self.byteOptionsToDict()
         return self
 
     def isPacketData(self, key):
@@ -76,6 +76,7 @@ class Packet():
 
     def compress(self):
         packet = bytes()
+        self.dictOptionsToByte()
         for key in self.__dict__:
             if self.isPacketData(key):
                 packet += self.__dict__[key]
@@ -88,14 +89,64 @@ class Packet():
         zeros = self.fillWithZeros(10)
         return mac + zeros
 
+    def createOption(self, tag, value):
+        if type(value) == int:
+            length = 1
+            option = bytearray([tag, length] + [value])
+        elif type(value) == list:
+            length = len(value)
+            option = bytearray([tag, length] + value)
+        elif type(value) == str:
+            length = len(value)
+            option = bytearray([tag, length] + list(value))
+        else:
+            print("Unsupported option type, please provide int, str or list.")
+            return
+        return option
 
     def addOption(self, tag, value):
-        if self.isOptionSupported(tag):
-            length = self._supported_options[tag]
-            option = bytearray([tag, length, value])
-            self.DHCPOptions += option
-        else:
-            print("Inserted unsupported option.")
+        if tag not in self._DHCPOptions_dict:
+            self._DHCPOptions_dict[tag] = value
+
+    def modifyOption(self, tag, value):
+        if tag in self._DHCPOptions_dict:
+            self._DHCPOptions_dict[tag] = value
+
+    def delOption(self, tag):
+        if tag in self._DHCPOptions_dict:
+            del self._DHCPOptions_dict[tag]
+
+    def printAllOptions(self):
+        for byte in self.DHCPOptions:
+            print(byte)
 
     def clearOptions(self):
         self.DHCPOptions = self.fillWithZeros(self._DHCPOptions_size)
+
+    def purgeOptions(self):
+        self._DHCPOptions_dict.clear()
+
+    def byteOptionsToDict(self):
+        idx = 0
+        tag = self.DHCPOptions[idx]
+        while tag != 0 and tag != 255 and idx != len(self.DHCPOptions):
+            if tag not in self._DHCPOptions_dict:
+                length = self.DHCPOptions[idx + 1]
+                value = self.DHCPOptions[idx + 2 : idx + 2 + length]
+                value_as_list = self.byteArrayToList(value)
+                self._DHCPOptions_dict[tag] = value_as_list
+            idx = idx + 2 + length
+            tag = self.DHCPOptions[idx]
+            
+    def byteArrayToList(self, value):
+        value_as_list = []
+        for i in value:
+            value_as_list.append(i)
+        return value_as_list
+
+    def dictOptionsToByte(self):
+        self.clearOptions()
+        for tag, value in self._DHCPOptions_dict.items():
+            print("adding: ", tag, value)
+            option = self.createOption(tag, value)
+            self.DHCPOptions += option

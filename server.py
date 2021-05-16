@@ -22,7 +22,6 @@ class Server(Host):
     def sendOffer(self):
         offer = self.createOffer()
         print("Sending offer...")
-        offer.print()
         self.sendMessage(offer, self.client_broadcast)
 
     def createOffer(self):
@@ -30,28 +29,23 @@ class Server(Host):
         offer.OP = bytes([0x02])
         offer.YIADDR = self.chooseIP(self.response.CHADDR)
         offer.Magiccookie = bytes([0x63, 0x82, 0x53, 0x63])
-        offer.clearOptions()
-        offer.addOption(53, 2)
-        print("offer przed: ", offer.DHCPOptions)
+        offer.modifyOption(53, 2)
+        offer.delOption(255)
         offer.addOption(255, 255)
-        print("offer po: ", offer.DHCPOptions)
         return offer
 
     def sendAck(self):
         ack = self.createAck()
         print("Sending ack...")
-        ack.print()
         self.sendMessage(ack, self.client_broadcast)
 
     def createAck(self):
         ack = self.response
         ack.OP = bytes([0x02])
         ack.Magiccookie = bytes([0x63, 0x82, 0x53, 0x63])
-        ack.clearOptions()
-        ack.addOption(53, 4)
-        print("ACK przed: ", ack.DHCPOptions)
+        ack.modifyOption(53, 5)
+        ack.delOption(255)
         ack.addOption(255, 255)
-        print("ACK po: ", ack.DHCPOptions)
         return ack    
 
     def chooseIP(self, mac):
@@ -80,6 +74,5 @@ class Server(Host):
                 else:
                     busy_addresses.append(host)
                 time.sleep(0.005)
-        # print("free addresses: ", unused_addresses)
         return unused_addresses
 

@@ -19,7 +19,7 @@ class Client(Host):
     def sendDiscover(self):
         discover = self.createDiscover()
         print("Sending discover...")
-        discover.print()
+        # discover.print()
         self.sendMessage(discover, self.server_broadcast)
 
 
@@ -38,31 +38,39 @@ class Client(Host):
         discover.GIADDR = bytes([0x00, 0x00, 0x00, 0x00])
         discover.CHADDR = discover.macAlign(self.interface.getMAC())
         discover.Magiccookie = bytes([0x63, 0x82, 0x53, 0x63])
+        discover.purgeOptions()
         discover.addOption(53, 1)
-        print("discover przed: ", discover.DHCPOptions)
+        # discover.addOption(12, "virtualbox")
+        discover.addOption(55, [1, 28, 2, 3, 15, 6, 119, 12, 44, 47, 26, 121, 42])
+        discover.addOption(61, [1, 11, 32, 43, 77, 250, 12])
         discover.addOption(255, 255)
-        print("discover po: ", discover.DHCPOptions)
         return discover
         
     def sendRequest(self):
         request = self.createRequest()
-        print("Sending Request...")
-        request.print()
+        print("Sending request...")
         self.sendMessage(request, self.server_broadcast)
 
     def createRequest(self):
         request = self.response
+        request.addOption(50, request.byteArrayToList(request.YIADDR))
         request.OP = bytes([0x01])
         request.SIADDR = bytes([0x00, 0x00, 0x00, 0x00])
         request.GIADDR = bytes([0x00, 0x00, 0x00, 0x00])
+        request.YIADDR = bytes([0x00, 0x00, 0x00, 0x00])
+        request.FLAGS = bytes([0x80, 0x00])
         request.CHADDR = request.macAlign(self.interface.getMAC())
         request.Magiccookie = bytes([0x63, 0x82, 0x53, 0x63])
-        # request.DHCPOptions = bytes([0x00])
-        request.clearOptions()
-        request.addOption(53, 3)
-        print("request przed: ", request.DHCPOptions)
+        request.modifyOption(53, 3)
+        request.delOption(255)
+        request.delOption(1)
+        request.delOption(3)
+        request.delOption(15)
+        # request.addOption(12, "virtualbox")
+        request.addOption(55, [1, 28, 2, 3, 15, 6, 119, 12, 44, 47, 26, 121, 42])
+        request.addOption(61, [1, 11, 32, 43, 77, 250, 12])
         request.addOption(255, 255)
-        print("request po: ", request.DHCPOptions)
+        # request.delOption(13)
         return request
 
     def generateXID(self):
