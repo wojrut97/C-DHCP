@@ -9,7 +9,7 @@ from host import Host
 from packet import Packet
 
 class Server(Host):
-    def __init__(self):
+    def __init__(self, authentication):
         super(Server, self).__init__()
         self.config_params = config.config("server_dhcp.conf")
         self.interface = Interface(self.config_params.interface)
@@ -17,7 +17,7 @@ class Server(Host):
         self.ongoing_transactions = {}
         self.known_hosts = {}
         self.unused_addresses = self.scanFreeAddresses()
-
+        self.authentication = authentication
 
     def sendOffer(self):
         offer = self.createOffer()
@@ -31,6 +31,8 @@ class Server(Host):
         offer.Magiccookie = bytes([0x63, 0x82, 0x53, 0x63])
         offer.modifyOption(53, 2)
         offer.delOption(255)
+        if self.authentication:
+            offer.addAuthenticationOption(self.config_params.password)
         offer.addOption(255, 255)
         return offer
 
@@ -45,6 +47,8 @@ class Server(Host):
         ack.Magiccookie = bytes([0x63, 0x82, 0x53, 0x63])
         ack.modifyOption(53, 5)
         ack.delOption(255)
+        if self.authentication:
+            ack.addAuthenticationOption(self.config_params.password)
         ack.addOption(255, 255)
         return ack    
 

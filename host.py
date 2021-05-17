@@ -3,6 +3,7 @@ import config
 import select
 import time
 from packet import Packet
+import hashlib
 
 class Host:
     def __init__(self):
@@ -48,6 +49,13 @@ class Host:
     def isReadyForRead(self, socket):
         sock = select.select([socket], [], [], 0)
         return bool(len(sock[0]))
+
+    def verifyAuthentication(self):
+        encoded_password = bytes(self.config_params.password, "utf-8")
+        hash_password = hashlib.md5(encoded_password)
+        password_as_list = list(hash_password.digest())
+        print (password_as_list, "??", self.response._DHCPOptions_dict[222])
+        return password_as_list == self.response._DHCPOptions_dict[222]
 
     def sendMessage(self, packet, destination):
         for attempt in range(10):

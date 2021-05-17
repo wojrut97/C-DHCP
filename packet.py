@@ -1,6 +1,7 @@
 import random
 import struct
-import time 
+import time
+import hashlib
 
 class Packet():
     def __init__(self):
@@ -82,9 +83,6 @@ class Packet():
                 packet += self.__dict__[key]
         return packet
 
-    def isOptionSupported(self, tag):
-        return tag in self._supported_options.keys()
-
     def macAlign(self, mac):
         zeros = self.fillWithZeros(10)
         return mac + zeros
@@ -98,11 +96,19 @@ class Packet():
             option = bytearray([tag, length] + value)
         elif type(value) == str:
             length = len(value)
+            option = bytearray([tag, length] + [bytes(value, "utf-8")])
+        elif type(value) == bytes:
+            length = len(value)
             option = bytearray([tag, length] + list(value))
         else:
-            print("Unsupported option type, please provide int, str or list.")
+            print("Unsupported option type.")
             return
         return option
+
+    def addAuthenticationOption(self, password):
+        tag = 222
+        hashed = hashlib.md5(bytes(password, "utf-8"))
+        self.addOption(tag, hashed.digest())
 
     def addOption(self, tag, value):
         if tag not in self._DHCPOptions_dict:

@@ -8,12 +8,13 @@ from packet import Packet
 
 
 class Client(Host):
-    def __init__(self):
+    def __init__(self, authentication):
         super(Client, self).__init__()
         self.config_params = config.config("client_dhcp.conf")
         self.interface = Interface(self.config_params.interface)
         self.sock = self.setupSocket("", self.client_port)
         self.ongoing_transactions = {}
+        self.authentication = authentication
 
         
     def sendDiscover(self):
@@ -43,6 +44,8 @@ class Client(Host):
         # discover.addOption(12, "virtualbox")
         discover.addOption(55, [1, 28, 2, 3, 15, 6, 119, 12, 44, 47, 26, 121, 42])
         discover.addOption(61, [1, 11, 32, 43, 77, 250, 12])
+        if self.authentication:
+            discover.addAuthenticationOption(self.config_params.password)
         discover.addOption(255, 255)
         return discover
         
@@ -69,6 +72,8 @@ class Client(Host):
         # request.addOption(12, "virtualbox")
         request.addOption(55, [1, 28, 2, 3, 15, 6, 119, 12, 44, 47, 26, 121, 42])
         request.addOption(61, [1, 11, 32, 43, 77, 250, 12])
+        if self.authentication:
+            request.addAuthenticationOption(self.config_params.password)
         request.addOption(255, 255)
         # request.delOption(13)
         return request
