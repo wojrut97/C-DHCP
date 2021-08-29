@@ -1,0 +1,87 @@
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number:
+            54:26:84:ab:89:e7:be:f1:4d:4f:ee:97:5c:d5:90:f0
+        Signature Algorithm: sha256WithRSAEncryption
+        Issuer: CN=Wojciech
+        Validity
+            Not Before: Aug  3 20:35:42 2021 GMT
+            Not After : Jul 18 20:35:42 2024 GMT
+        Subject: C=PL, ST=Powiat Gdanski, L=Gdansk, O=Politechnika Gdanska, OU=ETI, CN=Wojciech/emailAddress=wojciech@pg.com
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                RSA Public-Key: (2048 bit)
+                Modulus:
+                    00:ab:aa:a5:c0:9b:2f:25:ad:4c:ae:77:7b:63:e4:
+                    71:e2:5e:5b:79:84:89:a7:eb:31:8a:27:5a:4c:d6:
+                    ed:c5:74:e7:90:81:bf:58:ab:bc:48:39:9d:37:3c:
+                    fb:b9:d1:ef:2d:9a:7e:cf:93:23:37:d4:03:64:0c:
+                    02:cf:70:89:59:02:43:6e:b6:69:e3:00:fa:85:ea:
+                    f8:27:19:35:46:b9:9e:8f:6e:1c:d9:74:39:e6:c3:
+                    9e:dd:be:62:45:0c:a2:49:ad:0f:a6:3d:15:eb:92:
+                    19:65:8a:3a:79:cd:1d:0e:61:37:91:92:2a:cf:48:
+                    73:5a:fe:ae:6c:fd:fa:9f:66:68:4c:c9:e9:53:4b:
+                    10:1d:56:e6:d1:49:1d:73:25:a0:ce:ee:19:0f:0a:
+                    f5:ad:63:f7:19:71:db:65:37:16:33:9b:11:11:e3:
+                    6f:e9:bd:b9:4b:7b:58:c6:19:6c:9a:d6:b2:83:ed:
+                    e3:27:9f:cf:d8:02:02:87:7b:41:41:c2:20:f3:41:
+                    c3:cf:e2:75:0c:ba:a8:f8:2d:12:ea:7c:14:41:fa:
+                    20:b7:f3:14:3a:7d:e5:a0:7f:6b:4f:fe:ee:78:79:
+                    7a:d9:ac:fe:9f:55:23:9c:6d:09:00:75:3d:86:fe:
+                    c6:09:b0:6e:b4:87:85:12:4c:ab:05:9a:64:ae:ca:
+                    39:77
+                Exponent: 65537 (0x10001)
+        X509v3 extensions:
+            X509v3 Basic Constraints: 
+                CA:FALSE
+            X509v3 Subject Key Identifier: 
+                86:FD:C3:16:E9:98:CD:37:CD:97:FE:61:9A:DE:65:05:6A:EF:9C:07
+            X509v3 Authority Key Identifier: 
+                keyid:93:D5:DA:FD:2F:5E:24:F4:4D:8B:E7:AD:B9:21:0F:B8:9A:1E:01:DE
+                DirName:/CN=Wojciech
+                serial:7B:72:ED:17:AB:48:1E:A3:83:5C:2F:52:2B:AF:B0:57:87:5E:F3:EF
+
+            X509v3 Extended Key Usage: 
+                TLS Web Client Authentication
+            X509v3 Key Usage: 
+                Digital Signature
+    Signature Algorithm: sha256WithRSAEncryption
+         8e:f6:a3:4f:8e:d5:dd:32:94:1c:0b:ca:64:d8:c7:e2:25:f7:
+         f9:5b:4e:63:19:a5:14:9a:58:b3:5f:d5:ce:c1:41:ba:6a:4d:
+         b9:81:c0:db:55:b2:38:18:53:1b:c5:44:4e:ac:29:ff:80:c8:
+         26:7f:93:8b:9c:fe:c1:4f:09:b3:3d:79:21:ee:bb:28:06:1d:
+         85:63:55:b7:7a:49:51:bf:bc:59:4d:e5:d1:5c:65:18:18:3b:
+         dd:83:56:21:bc:3e:88:07:0a:29:c3:34:eb:87:1a:12:99:56:
+         ce:80:3c:40:21:bc:0f:9d:82:b0:45:a9:97:4e:c7:33:96:67:
+         17:02:3a:1a:ac:f8:53:e5:76:a5:e5:2a:4c:c4:78:7e:75:b5:
+         42:b4:01:aa:df:26:85:84:92:e8:dc:64:6b:e0:9d:b0:ec:4c:
+         e5:7a:d7:ac:cd:a6:6b:f0:ad:51:67:ad:26:c9:de:82:c5:62:
+         5a:cf:65:b5:54:f3:e5:f7:0e:b6:93:79:d1:b1:0b:97:70:56:
+         79:70:dd:ce:b6:ac:64:6f:e2:b6:ac:ba:e6:38:9c:3d:02:aa:
+         4a:01:4a:2c:02:d2:de:1f:8f:ea:54:1f:06:5f:bf:45:91:28:
+         70:e9:36:83:34:0c:41:2b:ec:a6:d5:b0:39:d5:7e:49:16:ad:
+         89:8b:9a:4e
+-----BEGIN CERTIFICATE-----
+MIID1TCCAr2gAwIBAgIQVCaEq4nnvvFNT+6XXNWQ8DANBgkqhkiG9w0BAQsFADAT
+MREwDwYDVQQDDAhXb2pjaWVjaDAeFw0yMTA4MDMyMDM1NDJaFw0yNDA3MTgyMDM1
+NDJaMIGXMQswCQYDVQQGEwJQTDEXMBUGA1UECAwOUG93aWF0IEdkYW5za2kxDzAN
+BgNVBAcMBkdkYW5zazEdMBsGA1UECgwUUG9saXRlY2huaWthIEdkYW5za2ExDDAK
+BgNVBAsMA0VUSTERMA8GA1UEAwwIV29qY2llY2gxHjAcBgkqhkiG9w0BCQEWD3dv
+amNpZWNoQHBnLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKuq
+pcCbLyWtTK53e2PkceJeW3mEiafrMYonWkzW7cV055CBv1irvEg5nTc8+7nR7y2a
+fs+TIzfUA2QMAs9wiVkCQ262aeMA+oXq+CcZNUa5no9uHNl0OebDnt2+YkUMokmt
+D6Y9FeuSGWWKOnnNHQ5hN5GSKs9Ic1r+rmz9+p9maEzJ6VNLEB1W5tFJHXMloM7u
+GQ8K9a1j9xlx22U3FjObERHjb+m9uUt7WMYZbJrWsoPt4yefz9gCAod7QUHCIPNB
+w8/idQy6qPgtEup8FEH6ILfzFDp95aB/a0/+7nh5etms/p9VI5xtCQB1PYb+xgmw
+brSHhRJMqwWaZK7KOXcCAwEAAaOBnzCBnDAJBgNVHRMEAjAAMB0GA1UdDgQWBBSG
+/cMW6ZjNN82X/mGa3mUFau+cBzBOBgNVHSMERzBFgBST1dr9L14k9E2L5625IQ+4
+mh4B3qEXpBUwEzERMA8GA1UEAwwIV29qY2llY2iCFHty7RerSB6jg1wvUiuvsFeH
+XvPvMBMGA1UdJQQMMAoGCCsGAQUFBwMCMAsGA1UdDwQEAwIHgDANBgkqhkiG9w0B
+AQsFAAOCAQEAjvajT47V3TKUHAvKZNjH4iX3+VtOYxmlFJpYs1/VzsFBumpNuYHA
+21WyOBhTG8VETqwp/4DIJn+Ti5z+wU8Jsz15Ie67KAYdhWNVt3pJUb+8WU3l0Vxl
+GBg73YNWIbw+iAcKKcM064caEplWzoA8QCG8D52CsEWpl07HM5ZnFwI6Gqz4U+V2
+peUqTMR4fnW1QrQBqt8mhYSS6Nxka+CdsOxM5XrXrM2ma/CtUWetJsnegsViWs9l
+tVTz5fcOtpN50bELl3BWeXDdzrasZG/itqy65jicPQKqSgFKLALS3h+P6lQfBl+/
+RZEocOk2gzQMQSvsptWwOdV+SRatiYuaTg==
+-----END CERTIFICATE-----

@@ -5,10 +5,10 @@ import os
 import random
 from client import Client
 from scapy.all import *
-import threading
+import time
 
 ip_table = {}
-malcious_client = Client()
+malcious_client = Client(False)
 
 
 def arp_monitor_callback(pkt):
@@ -43,8 +43,10 @@ def assignIpCommand(ip):
 
 def leaseUntilEmpty():
     while True:
+        time.sleep(0.5)
         malcious_client.sendDiscover()
         malcious_client.awaitMessage()
+        time.sleep(0.5)
         malcious_client.sendRequest()
         malcious_client.awaitMessage()
         obtained_ip = malcious_client.response.byteArrayToList(malcious_client.response.YIADDR)

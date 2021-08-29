@@ -11,21 +11,32 @@ def main():
 
     if args.server:
         print("Running in server mode.")
-        CDHCP_server = Server(True)
-        CDHCP_server.awaitMessage()
-        if CDHCP_server.verifyAuthentication() == True:
-            CDHCP_server.sendOffer()
-            CDHCP_server.awaitMessage()
-            if CDHCP_server.verifyAuthentication() == True:
-                CDHCP_server.sendAck()
+        CDHCP_server = Server()
+        CDHCP_server.awaitValidHelloMessage()
+        CDHCP_server.sendEncryptedHalfKeyAndCertificate()
+        CDHCP_server.awaitDHCPv6Message(CDHCP_server.server_port)
+        if CDHCP_server.retrievedValidSolicit():
+            time.sleep(0.1)
+            CDHCP_server.sendAdvertise()
+            CDHCP_server.awaitDHCPv6Message(CDHCP_server.server_port)
+            if CDHCP_server.retrievedValidRequest():
+                time.sleep(0.1)
+                CDHCP_server.sendReply()
+
     elif args.client:
         print("Running in client mode.")
-        CDHCP_client = Client(True)
-        CDHCP_client.sendDiscover()
-        CDHCP_client.awaitMessage()
-        if CDHCP_client.verifyAuthentication() == True:
+        CDHCP_client = Client()
+        CDHCP_client.sendCertRequest()
+        CDHCP_client.awaitValidHelloMessage()
+        CDHCP_client.sendSolicit()
+        CDHCP_client.awaitDHCPv6Message(CDHCP_client.client_port)
+        if CDHCP_client.retrievedValidAdvertise():
+            time.sleep(0.1)
             CDHCP_client.sendRequest()
-            CDHCP_client.awaitMessage()
+            CDHCP_client.awaitDHCPv6Message(CDHCP_client.client_port)
+            if CDHCP_client.retrievedValidReply():
+                CDHCP_client.assignIP()
+
 
 if __name__ == "__main__":
     main()
