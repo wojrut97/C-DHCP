@@ -170,22 +170,3 @@ class Server(Host):
     def chooseIP(self):
         return ipaddress.IPv6Address('bbbb:cccc::') + random.randint(1, 1000)
 
-    # def scanFreeAddresses(self):
-    #     unused_addresses = []
-    #     busy_addresses = []
-    #     #TODO: fix hardcoded address
-    #     network = ipaddress.IPv6Address('bbbb:cccc::')
-    #     for _ in range(3):
-    #         for i in range(1, 100):
-    #             host = network + i
-    #             # mac = arpreq.arpreq(host)
-    #             if host in busy_addresses:
-    #                 continue
-    #             elif True:
-    #                 unused_addresses.append(host)
-    #             else:
-    #                 busy_addresses.append(host)
-    #             time.sleep(0.005)
-    #     print("lol dlugosc: ", len(unused_addresses), "Ostatni: ", unused_addresses[-1])
-    #     return unused_addresses
-
