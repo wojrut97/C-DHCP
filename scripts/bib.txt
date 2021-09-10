@@ -1,0 +1,163 @@
+@article{rfc903,
+   author   =  {{Network Working Group}},
+   title    =  "RFC 903 - A Reverse Address Resolution Protocol \url{https://datatracker.ietf.org/doc/html/rfc903}",
+   urldate  =  "2021-07-26",
+}
+@article{rfc951,
+   author   =  {{Network Working Group}},
+   title    =  "RFC 951 - Bootstrap protocol (BOOTP) \url{https://datatracker.ietf.org/doc/html/rfc951}",
+   urldate  =  "2021-07-26",
+}
+@article{rfc1497,
+   author   =  {{Network Working Group}},
+   title    =  "RFC 1497 - Bootstrap protocol (BOOTP) \url{https://datatracker.ietf.org/doc/html/rfc1497}",
+   urldate  =  "2021-07-27",
+}
+@article{rfc2104,
+   author   =  {{Network Working Group}},
+   title    =  "RFC 2104 - HMAC: Keyed-Hashing for Message Authentication \url{https://datatracker.ietf.org/doc/html/rfc2104}",
+   urldate  =  "2021-07-29",
+}
+@article{rfc2131,
+   author   =  {{Network Working Group}},
+   title    =  "RFC 2131 - Dynamic Host Configuration Protocol \url{https://tools.ietf.org/html/rfc2131}",
+   urldate  =  "2021-01-06",
+}
+@article{rfc2132,
+   author   =  {{Network Working Group}},
+   title    =  "RFC 2132 - DHCP Options and BOOTP Vendor Extensions \url{https://tools.ietf.org/html/rfc2132}",
+   urldate  =  "2021-07-26",
+}
+@article{rfc3046,
+   author   =  {{Network Working Group}},
+   title    =  "RFC 3046 - DHCP Relay Agent Information Option \url{https://tools.ietf.org/html/rfc3046}",
+   urldate  =  "2021-07-30",
+}
+@article{rfc3315,
+   author   =  {{Network Working Group}},
+   title    =  "RFC 3315 - IPv6 Stateless Address Autoconfiguration \url{https://tools.ietf.org/html/rfc3315}",
+   urldate  =  "2021-03-28",
+}
+@article{rfc3318,
+   author   =  {{Network Working Group}},
+   title    =  "RFC 3318 - Authentication for DHCP Messages \url{https://tools.ietf.org/html/rfc3318}",
+   urldate  =  "2021-07-28",
+}
+@article{rfc4158,
+   author   =  {{Network Working Group}},
+   title    =  "RFC 4158 - Internet X.509 Public Key Infrastructure:
+Certification Path Building \url{https://datatracker.ietf.org/doc/html/rfc4158}",
+   urldate  =  "2021-08-22",
+}
+@article{rfc4291,
+   author   =  {{Network Working Group}},
+   title    =  "RFC 4291 - IP Version 6 Addressing Architecture \url{https://datatracker.ietf.org/doc/html/rfc4291}",
+   urldate  =  "2021-07-26",
+}
+@article{rfc4861,
+   author   =  {{Network Working Group}},
+   title    =  "RFC 4861 - Neighbor Discovery for IP version 6 (IPv6) \url{https://datatracker.ietf.org/doc/html/rfc4861}",
+   urldate  =  "2021-07-26",
+}
+@article{rfc4862,
+   author   =  {{Network Working Group}},
+   title    =  "RFC 4862 - IPv6 Stateless Address Autoconfiguration \url{https://tools.ietf.org/html/rfc4862}",
+   urldate  =  "2021-03-20",
+}
+@article{rfc8415,
+   author   =  {{Network Working Group}},
+   title    =  "RFC 8415 - Dynamic Host Configuration Protocol for IPv6 (DHCPv6) \url{https://tools.ietf.org/html/rfc8415}",
+   urldate  =  "2021-03-06",
+}
+@article{rfc8981,
+   author   =  {{Network Working Group}},
+   title    =  "RFC 8981 - Temporary Address Extensions for Stateless Address Autoconfiguration in IPv6 \url{https://datatracker.ietf.org/doc/html/rfc8981}",
+   urldate  =  "2021-07-30",
+}
+@article{DHCPSecurityIssues,
+   author   =  {{Charles M. Kozierok}},
+   title    =  "DHCP Security Issues \url{http://www.tcpipguide.com/free/t_DHCPSecurityIssues.htm}",
+   urldate  =  "2021-01-06",
+}
+@article{DHCPSecuirtyImplications,
+   author   =  {{Matthew P. Harvey}},
+   title    =  "Dynamic Host Configuration Protocol: Security Implications and Possible Safeguards \url{https://www.giac.org/paper/gsec/3662/dynamic-host-configuration-protocol-security-implications-safeguards/105922}",
+   urldate  =  "2021-01-06",
+}
+@article{AuthenticationandPrivacyApproachforDHCPv6,
+   author   =  {{A. Al-Ani, M. Anbar, I. H. Hasbullah, R. Abdullah and A. K. Al-Ani}},
+   title    =  "Authentication and Privacy Approach for DHCPv6 \url{IEEE Access, vol. 7, pp. 73144-73156, 2019, doi: 10.1109/ACCESS.2019.2919966}",
+}
+@article{OptimizingSecuritySlaac,
+   author   =  {{Junaid Latief Shah, Javed Parvez}},
+   title    =  "Optimizing Security and Address Configuration in IPv6 SLAAC
+   \url{https://www.sciencedirect.com/science/article/pii/S1877050915013447}",
+   urldate  =  "2021-03-30",
+}
+@article{SecurityConcernsOfSlaac,
+   author   =  {{Parul Sharma, Dr. Anup Girdhar}},
+   title    =  "Security concerns of IPv6-SLAAC and security policies to diminish the risk associated with them.
+   \url{https://arxiv.org/pdf/1405.4197.pdf}",
+   urldate  =  "2021-03-30",
+}
+@article{PrivacyConsiderationsForDHCPv6,
+   author   =  {{S. Krishnan, Ericsson, T. Mrugalski}},
+   title    =  "Privacy Considerations for DHCPv6
+   \url{https://datatracker.ietf.org/doc/html/rfc7824}",
+   urldate  =  "2021-04-02",
+}
+@article{SecurityandPrivacyDUID,
+   author   =  {{J. Tront, S. Groat, M. Dunlop, R. Marchany}},
+   title    =  "Security and Privacy produced by DHCP Unique Identifiers
+   \url{https://ieeexplore-1ieee-1org-10000074t00ca.han.bg.pg.edu.pl/document/6111142}",
+   urldate  =  "2021-07-22",
+}
+@article{ExposingPotentialPrivacyIssueswithIPv6,
+   author   =  {{C. Carpene, A. Woodward}},
+   title    =  "Exposing Potential Privacy Issues with IPv6 Address Construction
+   \url{https://ro.ecu.edu.au/cgi/viewcontent.cgi?article=1141&context=ism}",
+   urldate  =  "2021-07-24",
+}
+@article{SecureDHCPv6MechanismForDHCPv6Security,
+   author   =  {{Lishan Li, Gang Ren, Ying Liu, Jianping Wu}},
+   title    =  "Secure DHCPv6 Mechanism for DHCPv6 Security and Privacy Protection
+   \url{https://ieeexplore.ieee.org/document/8293069}",
+   urldate  =  "2021-06-20",
+}
+@article{atrybutyBezpieczenstwa,
+   author   =  {{Polsko-Japońska Wyższa Szkoła Technik Komputerowych}},
+   title    =  "Wprowadzenie do pojęć związanych z bezpieczeństwem systemów informacyjnych
+   \url{http://edu.pjwstk.edu.pl/wyklady/tbo/scb/lecture-01/lecture-01.html}",
+   urldate  =  "2021-06-16",
+}
+@article{ciscoSnooping,
+   author   =  {{Cisco}},
+   title    =  "Configuring DHCP Snooping
+   \url{https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst6500/ios/12-2SXF/native/configuration/guide/swcg/snoodhcp.pdf}",
+   urldate  =  "2021-07-30",
+}
+@article{ciscoSnoopingImage,
+   author   =  {{FS community}},
+   title    =  "What Is DHCP Snooping and How It Works?
+   \url{https://community.fs.com/blog/what-is-dhcp-snooping-and-how-it-works.html}",
+   urldate  =  "2021-07-30",
+}
+@article{PKI4minutes,
+   author   =  {{Nexus Group}},
+   title    =  "Public key infrastructure (PKI) explained in 4 minutes
+   \url{https://www.nexusgroup.com/crash-course-pki/}",
+   urldate  =  "2021-08-22",
+}
+@article{WprowadzeniedoPKI,
+   author   =  {{PG ETI}},
+   title    =  "Wprowadzenie do PKI 
+   \url{http://kti.eti.pg.gda.pl/ktilab/pki/PKI.pdf}",
+   urldate  =  "2021-08-23",
+}
+@article{PKISetup,
+   author   =  {{DigitalOcean}},
+   title    =  "How To Set Up and Configure a Certificate Authority (CA) On Ubuntu 20.04 
+   \url{https://www.digitalocean.com/community/tutorials/how-to-set-up-and-configure-a-certificate-authority-ca-on-ubuntu-20-04}",
+   urldate  =  "2021-08-23",
+}
+

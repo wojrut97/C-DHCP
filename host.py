@@ -1,18 +1,15 @@
 import base64
+import threading
 from netaddr import * 
 from cryptography import x509
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.primitives import hashes
-from cryptography.x509.extensions import TLSFeature
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography.fernet import Fernet
 from scapy.all import *
 from scapy.layers.tls.all import *
-import config
-import string
-import random
 import secrets
 import netifaces as ni
 
@@ -21,12 +18,14 @@ class Host:
         self.transaction_history = {}
         self.client_port = 546
         self.server_port = 547
-        self.ssl_port = 443
+        self.handshake_client_port = 1546
+        self.handshake_server_port = 1547
+        self.handshake_client_port = 1546
+        self.handshake_server_port = 1547
         self.servers_multicast_address = "ff02::1:2"
         self.interface = None
         self.last_message = None
-        self.ip = self.getIP()
-        print("My ip: ", self.ip)
+        self.ip = None
 
         #Cryptography
         self.half_key_size = 10
@@ -37,6 +36,14 @@ class Host:
         self.kdf = None
         self.encryption_key = None
         self.fernet = None
+
+
+
+        #Communication
+        self.got_certificate = False
+        self.got_half_key = False
+        self.handshake_message_buffer = []
+        self.DHCPv6_message_buffer = []
 
 
         #CA
@@ -50,14 +57,26 @@ class Host:
         self.private_key = None
         
         #Issuer
-        self.retrieved_certificate_str = None
         self.retrieved_certificate = None
         self.retrieved_public_key = None
         self.retrieved_half_key = None
         self.issuer_ip = None
 
+
+
+
+    def startDHCPv6Listener(self):
+        listener = threading.Thread(target=self.DHCPv6Listener, daemon=True)
+        listener.start()
+
+    def DHCPv6Listener(self):
+        print("DHCPv6 listener ready!")
+        while True:
+            received = sniff(iface=self.interface_name, filter="dst port " + str(self.receive_port), count=1)
+            self.DHCPv6_message_buffer.append(received[0])
+
     def getIP(self):
-        ip = ni.ifaddresses("enp0s8")[ni.AF_INET6][0]["addr"]
+        ip = ni.ifaddresses(self.interface_name)[ni.AF_INET6][0]["addr"]
         return ip.split("%")[0]
 
     def createEncryptionKey(self):
@@ -93,8 +112,14 @@ class Host:
         )
         return private_key
 
-    def verifyCertificate(self):
-        # Verify signature
+    def awaitHandshakeMessage(self):
+        while True:
+            if self.handshake_message_buffer:
+                received = self.handshake_message_buffer.pop()
+                break
+        self.retrieveMessageData(received)
+
+    def isValidCertificate(self):
         try:
             self.CA_public_key.verify(
                 self.retrieved_certificate.signature,
@@ -104,16 +129,56 @@ class Host:
             )
         except InvalidSignature:
             print("Invalid Signature")
-            return 1
-        # Verify subject
-        if self.retrieved_certificate.subject is not None:
-            return 0
-        else:
-            return 2
+            return False
+        return True
 
-    def awaitDHCPv6Message(self, port):
-        received = sniff(iface="enp0s8", filter="dst port " + str(port), count=1)
-        self.last_message = self.decryptDHCPv6Options(received[0])
+    def sendCertificate(self):
+        layer2 = Ether()
+        layer3 = IPv6()
+        layer4 = UDP()
+        layer3.dst = self.servers_multicast_address
+        layer3.src = self.ip
+        layer4.sport = self.handshake_receive_port
+        layer4.dport = self.handshake_send_port
+
+        cert_message = layer2 / layer3 / layer4 / TLS13Certificate(
+            self.certificate.public_bytes(serialization.Encoding.PEM))
+
+        sendp(cert_message, iface=self.interface_name)
+
+    def sendEncryptedHalfKey(self):
+        encrypted_half_key = self.retrieved_public_key.encrypt(
+            self.half_key, padding.OAEP(
+                mgf=padding.MGF1(hashes.SHA256()),
+                algorithm=hashes.SHA256(),
+                label=None
+                )
+            )
+        layer2 = Ether()
+        layer3 = IPv6()
+        layer4 = UDP()
+        layer2.dst = self.interface.getRandomMAC()
+        layer3.dst = self.servers_multicast_address
+        layer3.src = self.ip
+        layer4.sport = self.handshake_receive_port
+        layer4.dport = self.handshake_send_port
+
+        key_message = layer2 / layer3 / layer4 / encrypted_half_key
+
+        sendp(key_message, iface=self.interface_name)
+
+    def isValidSubject(self):
+        if self.retrieved_certificate.subject is not None:
+            return True
+        else:
+            return False
+
+    def awaitDHCPv6Message(self):
+        while True:
+            if self.DHCPv6_message_buffer:
+                received = self.DHCPv6_message_buffer.pop()
+                break
+        self.last_message = self.decryptDHCPv6Options(received)
 
     def decryptDHCPv6Options(self, message):
         encrypted_data = bytes(message["Raw"])
@@ -140,25 +205,26 @@ class Host:
         for message in messages:
             if str(message["Raw"])[2:29] == "-----BEGIN CERTIFICATE-----":
                 self.retrievePublicKeyAndCertificate(message)
-                print("Reterieved certificate ")
-            elif len(message["Raw"]) < 20:
-                print("Retrieved raw half-key")
-                self.retrieveHalfKey(message)
+                if self.isValidCertificate():
+                    if self.isValidSubject():
+                        self.got_certificate = True
+                        print("Obtained valid certificate")
             else:
-                print("Retrieved encrypted half-key")
-                self.retrieveEncryptedHalfKey(message)
+                self.retrieveHalfKey(message)
+                self.combineKeyTogether()
+                self.createEncryptionKey()
+                self.got_half_key = True
+                print("Obtained half of the symmetric key")
 
 
     def retrievePublicKeyAndCertificate(self, message):
-        self.retrieved_certificate_str = str(message["Raw"])[2:]
-        self.retrieved_certificate_str = self.retrieved_certificate_str.replace('\\n', '\n')
-        self.retrieved_certificate = x509.load_pem_x509_certificate(self.retrieved_certificate_str.encode("utf-8"))
+        retrieved_certificate_str = str(message["Raw"])[2:]
+        retrieved_certificate_str = retrieved_certificate_str.replace('\\n', '\n')
+        self.retrieved_certificate = x509.load_pem_x509_certificate(retrieved_certificate_str.encode("utf-8"))
         self.retrieved_public_key = self.retrieved_certificate.public_key()
 
-    def retrieveEncryptedHalfKey(self, message):
+    def retrieveHalfKey(self, message):
         hashed_key = bytes(message["Raw"])
-        print("Typ:", type(hashed_key), "value:", hashed_key, "Len:", len(hashed_key))
-        print("Typ:", type(self.private_key), "value:", hashed_key, "Len:", len(hashed_key))
         self.retrieved_half_key = self.private_key.decrypt(
             hashed_key,
             padding.OAEP(
@@ -167,8 +233,14 @@ class Host:
                 label=None)
             )
 
-    def retrieveHalfKey(self, message):
-        self.retrieved_half_key = bytes(message["Raw"])
-
     def createDUID(self):
-        return "00030001" + str(EUI(self.MAC)).replace("-","")
+        return "00030001" + str(EUI(self.interface.MAC)).replace("-","")
+
+####Unencrypted DHCPv6 part####
+
+    def awaitUnencryptedDHCPv6Message(self):
+        while True:
+            if self.DHCPv6_message_buffer:
+                received = self.DHCPv6_message_buffer.pop()
+                break
+        self.last_message = received

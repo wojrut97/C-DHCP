@@ -9,7 +9,6 @@ class config:
                 self.requested_ip = config["CLIENT"]["requested_ip"]
                 self.lease_time = config["CLIENT"]["lease_time"]
                 self.interface = config["CLIENT"]["interface"]
-                self.password = config["CLIENT"]["password"]
             except:
                 print("Error reading client config file")
         elif config_file == "server_dhcp.conf":
@@ -18,7 +17,7 @@ class config:
                 self.lease_time = config["SERVER"]["lease_time"]
                 self.interface = config["SERVER"]["interface"]
                 self.network_ip = config["SERVER"]["network_ip"]
-                self.password = config["SERVER"]["password"]
+                self.allowlist = config["SERVER"]["allowlist"]
             except:
                 print("Error reading server config file")
         else:

