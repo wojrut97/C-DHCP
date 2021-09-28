@@ -1,3 +1,8 @@
+# Master's Thesis
+# Analysis of security and privacy of IP network auto-configuration services.
+# Gdansk University of Technology 2021
+# Author: Wojciech Rutkowski
+
 import base64
 import threading
 from netaddr import * 
@@ -13,13 +18,18 @@ from scapy.layers.tls.all import *
 import secrets
 import netifaces as ni
 
+# This class represents all DHCP hosts
+# It contains functionalities utilized by both client and server
+# Runs asynchronous packet listeners: startDHCPv6Listener
+# Implements methods for sending and receiving certificate
+# Contains method for DUID creation
+# Implements cryptography methods
+
 class Host:
     def __init__(self):
         self.transaction_history = {}
         self.client_port = 546
         self.server_port = 547
-        self.handshake_client_port = 1546
-        self.handshake_server_port = 1547
         self.handshake_client_port = 1546
         self.handshake_server_port = 1547
         self.servers_multicast_address = "ff02::1:2"
@@ -37,14 +47,11 @@ class Host:
         self.encryption_key = None
         self.fernet = None
 
-
-
         #Communication
         self.got_certificate = False
         self.got_half_key = False
         self.handshake_message_buffer = []
         self.DHCPv6_message_buffer = []
-
 
         #CA
         self.CA_cert_path = "./certificates/ca.crt"
@@ -61,9 +68,6 @@ class Host:
         self.retrieved_public_key = None
         self.retrieved_half_key = None
         self.issuer_ip = None
-
-
-
 
     def startDHCPv6Listener(self):
         listener = threading.Thread(target=self.DHCPv6Listener, daemon=True)
@@ -200,7 +204,6 @@ class Host:
         new_message = layer2 / layer3 / layer4
         return new_message
 
-
     def retrieveMessageData(self, messages):
         for message in messages:
             if str(message["Raw"])[2:29] == "-----BEGIN CERTIFICATE-----":
@@ -215,7 +218,6 @@ class Host:
                 self.createEncryptionKey()
                 self.got_half_key = True
                 print("Obtained half of the symmetric key")
-
 
     def retrievePublicKeyAndCertificate(self, message):
         retrieved_certificate_str = str(message["Raw"])[2:]

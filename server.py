@@ -1,3 +1,8 @@
+# Master's Thesis
+# Analysis of security and privacy of IP network auto-configuration services.
+# Gdansk University of Technology 2021
+# Author: Wojciech Rutkowski
+
 from cryptography.exceptions import InvalidSignature
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat import primitives
@@ -12,6 +17,12 @@ from host import Host
 from scapy.all import *
 from cryptography import x509
 from scapy.layers.tls.all import *
+
+# This class represents secure and insecure DHCP Server 
+# Implements methods for Advertise and Reply sending and creation
+# Implements methods for Solicit and Request verification
+# Contains unencrypted versions of above functionalities
+
 
 class Server(Host):
     def __init__(self):

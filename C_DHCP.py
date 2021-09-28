@@ -1,9 +1,19 @@
+# Master Thesis
+# Analysis of security and privacy of IP network auto-configuration services.
+# Gdansk University of Technology 2021
+# Author: Wojciech Rutkowski
+
 import argparse
 from server import Server
 from client import Client
 import time
 
-
+# Entry point for the program
+# 4 supported modes:
+#        Secure Client    -   python3 C_DHCP.py -c
+#        Secure Server    -   python3 C_DHCP.py -s
+#        Insecure Client  -   python3 C_DHCP.py -ic
+#        Insecure Server  -   python3 C_DHCP.py -is
 
 def main():
     parser = argparse.ArgumentParser(description="Choose C-DHCP mode.")

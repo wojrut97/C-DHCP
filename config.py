@@ -1,4 +1,11 @@
+# Master's Thesis
+# Analysis of security and privacy of IP network auto-configuration services.
+# Gdansk University of Technology 2021
+# Author: Wojciech Rutkowski
+
 import configparser
+
+# Configuration class for all DHCP hosts 
 
 class config:
     def __init__(self, config_file):

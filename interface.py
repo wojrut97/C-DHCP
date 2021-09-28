@@ -1,5 +1,14 @@
+# Master's Thesis
+# Analysis of security and privacy of IP network auto-configuration services.
+# Gdansk University of Technology 2021
+# Author: Wojciech Rutkowski
+
 import uuid
 import random
+
+# Class that represents network interface
+# It consists of methods for reading MAC address and assigning IP address
+# Utilized by host class
 
 class Interface:
     def __init__(self, name):

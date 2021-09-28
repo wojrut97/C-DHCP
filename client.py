@@ -1,3 +1,8 @@
+# Master's Thesis
+# Analysis of security and privacy of IP network auto-configuration services.
+# Gdansk University of Technology 2021
+# Author: Wojciech Rutkowski
+
 from cryptography.x509.extensions import TLSFeature
 import config
 import random
@@ -6,6 +11,10 @@ from scapy.layers.tls.all import *
 from host import Host
 from interface import Interface
 
+# This class represents secure and insecure DHCP Client 
+# Implements methods for Solicit and Request sending and creation
+# Implements methods for Advertise and Reply verification
+# Contains unencrypted versions of above functionalities
 
 class Client(Host):
     def __init__(self):
@@ -29,6 +38,7 @@ class Client(Host):
         #Listeners
         self.startHandshakeListener()
         self.startDHCPv6Listener()
+
 ####C-DHCP part####
 
     def startHandshakeListener(self):
